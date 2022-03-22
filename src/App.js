@@ -1,24 +1,27 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import {BrowserRouter, Redirect, Route, Switch} from "react-router-dom";
+import {Client as Styletron} from 'styletron-engine-atomic';
+import {Provider as StyletronProvider} from 'styletron-react';
+import {LightTheme, BaseProvider} from 'baseui';
+import Login from './components/users/Login';
+import Register from './components/users/Register';
+import ForgetPassword from './components/users/ForgetPassword';
 
+const engine = new Styletron();
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer">
-          Learn React
-        </a>
-      </header>
-    </div>
+    <StyletronProvider value={engine}>
+      <BaseProvider theme={LightTheme} children={null}>
+        <BrowserRouter>
+          <Switch>
+            <Redirect exact from='/' to='/login'/>
+            <Route exact path={"/login"} component={Login} />
+            <Route exact path={"/register"} component={Register} />
+            <Route exact path={"/forget-password"} component={ForgetPassword} />
+          </Switch>
+        </BrowserRouter>
+      </BaseProvider>
+    </StyletronProvider>
   );
 }
 
