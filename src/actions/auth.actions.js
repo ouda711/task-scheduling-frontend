@@ -7,6 +7,7 @@ function login(loginForm) {
   return dispatch => {
     dispatch(request());
     AxiosUsersService.login(loginForm).then(result => {
+      console.log(result)
       if(result && result.data.token){
         const token =  result.data.token;
         const user = result.data.user;

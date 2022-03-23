@@ -6,6 +6,7 @@ import {LightTheme, BaseProvider} from 'baseui';
 import Login from './components/users/Login';
 import Register from './components/users/Register';
 import ForgetPassword from './components/users/ForgetPassword';
+import HomePage from './components/pages/HomePage';
 
 const engine = new Styletron();
 function App() {
@@ -14,10 +15,11 @@ function App() {
       <BaseProvider theme={LightTheme} children={null}>
         <BrowserRouter>
           <Switch>
-            <Redirect exact from='/' to='/login'/>
+            <Redirect exact from='/' to='/home' />
             <Route exact path={"/login"} component={Login} />
             <Route exact path={"/register"} component={Register} />
             <Route exact path={"/forget-password"} component={ForgetPassword} />
+            <Route exact path={"/home"} component={HomePage} />
           </Switch>
         </BrowserRouter>
       </BaseProvider>

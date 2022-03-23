@@ -1,10 +1,10 @@
 import axios from 'axios';
-import env from "react-dotenv";
+require('dotenv').config();
 
 let cachedUser = {};
 
 const axiosInstance = axios.create({
-  baseURL: env.SERVER_URL,
+  baseURL: process.env.REACT_APP_SERVER_URL,
   responseType: 'json',
   responseEncoding: 'utf-8'
 });

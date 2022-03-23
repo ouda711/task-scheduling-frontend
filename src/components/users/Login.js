@@ -84,7 +84,8 @@ function Login() {
             </div>
             <span className={css({
               color: ' #ec7063 ',
-              fontSize: '0.75rem'
+              fontSize: '0.75rem',
+              marginTop: '-0.75rem'
             })}>{errors.password && errors.password.message}</span>
             <button className={css({
               backgroundColor: 'rgb(69, 69, 185)',
@@ -141,4 +142,3 @@ const Inner = ({children}) => {
 };
 
 export default Login;
-

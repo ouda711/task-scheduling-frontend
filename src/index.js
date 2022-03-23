@@ -2,12 +2,25 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+import getStore from './store';
 import reportWebVitals from './reportWebVitals';
+import { UsersService } from './services/local/UsersService';
+import { AxiosService } from './services/net/base/AxiosService';
+import { AuthAction } from './actions/types';
+import { Provider } from 'react-redux';
+
+const store = getStore();
+
+const user = UsersService.getUser();
+if(user) {
+  AxiosService.setUser(user);
+  store.dispatch({type: AuthAction.LOGIN_SUCCESS, user});
+}
 
 ReactDOM.render(
-  <React.StrictMode>
+  <Provider store={store}>
     <App />
-  </React.StrictMode>,
+  </Provider>,
   document.getElementById('root')
 );
 
