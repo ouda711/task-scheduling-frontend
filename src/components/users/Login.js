@@ -2,12 +2,19 @@ import React,{useState, useEffect} from 'react';
 import {useStyletron} from 'baseui';
 import {Grid, Cell} from 'baseui/layout-grid';
 import { connect } from 'react-redux';
+import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 
 function Login() {
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState( '');
   const [css, theme] = useStyletron();
+  const {register, handleSubmit, formState: {errors}} = useForm({
+    defaultValues: {
+      phone: "",
+      password: ""
+    }
+  });
 
   useEffect(() => {
 
@@ -28,7 +35,9 @@ function Login() {
           padding: '1.8rem',
           boxShadow: '2px 5px 20px rgba(0, 0, 0, 0.1)',
         })}>
-          <form>
+          <form onSubmit={handleSubmit((data) => {
+            console.log(data);
+          })}>
             <h2 className={css({
               textAlign: 'center',
               fontWeight: 'bold',
@@ -48,8 +57,8 @@ function Login() {
             })}>
               <label htmlFor="phone" className={css({
                 color: 'rgb(170 166 166)'
-              })}> <b>Email</b></label>
-              <input type="text" placeholder="Enter Phone" id={"phone"} name="phone" required className={css({
+              })}> <b>Phone</b></label>
+              <input type="text" placeholder="Enter Phone" id={"phone"} {...register("phone", {required: "Phone number is required", minLength: {value: 8, message: "Phone must be 8 characters and more"}})} name="phone" className={css({
                 padding: '10px 20px',
                 marginTop: '8px',
                 marginBottom: '15px',
@@ -57,10 +66,14 @@ function Login() {
                 borderRadius: '8px',
                 boxSizing: 'border-box'
               })}/>
+              <span className={css({
+                color: ' #ec7063 ',
+                fontSize: '0.75rem'
+              })}>{errors.phone && errors.phone.message}</span>
               <label htmlFor="psw" className={css({
                 color: 'rgb(170 166 166)'
               })}><b>Password</b></label>
-              <input type="password" placeholder="Enter Password" id={"psw"} name="psw" required className={css({
+              <input type="password" placeholder="Enter Password" id={"psw"} name="password" {...register("password", {required: "Password is required", minLength: {value: 5, message: "Password must be above 5 characters"}})} className={css({
                 padding: '10px 20px',
                 marginTop: '8px',
                 marginBottom: '15px',
@@ -69,6 +82,10 @@ function Login() {
                 boxSizing: 'border-box'
               })}/>
             </div>
+            <span className={css({
+              color: ' #ec7063 ',
+              fontSize: '0.75rem'
+            })}>{errors.password && errors.password.message}</span>
             <button className={css({
               backgroundColor: 'rgb(69, 69, 185)',
               color: 'white',

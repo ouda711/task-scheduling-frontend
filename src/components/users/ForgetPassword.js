@@ -1,5 +1,6 @@
 import React,{useState, useEffect} from 'react';
 import {useStyletron} from 'baseui';
+import { useForm } from 'react-hook-form';
 import {Grid, Cell} from 'baseui/layout-grid';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
@@ -7,6 +8,11 @@ import { Link } from 'react-router-dom';
 function ForgetPassword() {
   const [email, setEmail] = useState( '');
   const [css, theme] = useStyletron();
+  const { handleSubmit, register, formState: {errors} } = useForm();
+
+  const onSubmit = (values) => {
+    console.log(values)
+  }
 
   useEffect(() => {
 
@@ -27,7 +33,7 @@ function ForgetPassword() {
           padding: '1.8rem',
           boxShadow: '2px 5px 20px rgba(0, 0, 0, 0.1)',
         })}>
-          <form>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <h2 className={css({
               textAlign: 'center',
               fontWeight: 'bold',
@@ -40,7 +46,7 @@ function ForgetPassword() {
               <label htmlFor="email" className={css({
                 color: 'rgb(170 166 166)'
               })}> <b>Email</b></label>
-              <input type="text" placeholder="Enter Email" name="email" id={"email"} required className={css({
+              <input type="email" placeholder="Enter Email" name="email" id={"email"} {...register('email', {required: "Email address is required", pattern: {value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, message: "Please provide a valid email address"}})} className={css({
                 padding: '10px 20px',
                 marginTop: '8px',
                 marginBottom: '15px',
@@ -48,6 +54,10 @@ function ForgetPassword() {
                 borderRadius: '8px',
                 boxSizing: 'border-box'
               })}/>
+              <span className={css({
+                color: ' #ec7063 ',
+                fontSize: '0.75rem'
+              })}>{errors.email && errors.email.message}</span>
             </div>
             <button className={css({
               backgroundColor: 'rgb(69, 69, 185)',
