@@ -1,10 +1,41 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {useStyletron} from 'baseui';
+import {useParams} from "react-router-dom";
 import { Link } from 'react-router-dom';
 import {ReactComponent as More} from '../../assets/more.svg';
+import { TaskAxiosService } from '../../services/net/TaskAxiosService';
 
-function TaskHolder(props) {
+function TaskSingleContainer(props) {
+  const details = useParams();
+  const taskId = details.id;
   const [css, theme] = useStyletron();
+
+  const [task, setTask] = useState({});
+  const [customer, setCustomer] = useState({});
+  const [count, setCount] = useState( 0);
+  const [comment, setComment] = useState([]);
+  const [agent, setAgent] = useState([]);
+
+  useEffect(() => {
+    singleTask()
+  },[])
+
+  const singleTask = () => {
+    TaskAxiosService.getById(taskId).then((response) => {
+      if(response.data && response.data.success) {
+        console.log(response.data)
+        setTask(response.data)
+        setCustomer(response.data.customer)
+        setCount(response.data.comments.length)
+        setComment(response.data.comments);
+        setAgent(response.data.agents)
+        console.log(response.data.agents)
+      }
+    }).catch(err=>{
+
+    })
+  }
+
 
   return (
     <div className={css({
@@ -20,38 +51,38 @@ function TaskHolder(props) {
         display: 'flex',
         justifyContent: 'space-between'
       })}>
-        <Link to={props.link} className={css({
+        <h2 className={css({
           textDecoration:'none',
           fontWeight:'600',
           fontSize:'1.25rem',
           color:'#283747'
-        })}>Task {props.id}</Link>
+        })}>Task {task.id}</h2>
         <button className={css({
           background: 'transparent',
           border: 'none',
           cursor:'pointer'
         })}><More className={css({width:'1rem', height:'1rem'})}/></button>
       </div>
-      {props.status === 'deferred'?<div className={css({
+      {task.task_status === 'deferred'?<div className={css({
         display:'flex',
         alignItems: 'center',
         marginTop: '0.75rem'
       })}>
         <span className={css({
-        width:'1rem',
-        height: '1rem',
-        backgroundColor: '#e74c3c',
-        borderRadius: '50%',
-        display: 'inline-block',
-        marginRight: '0.75rem'
-      })}>
+          width:'1rem',
+          height: '1rem',
+          backgroundColor: '#e74c3c',
+          borderRadius: '50%',
+          display: 'inline-block',
+          marginRight: '0.75rem'
+        })}>
         </span>
         <span className={css({
-        color: '#e74c3c',
-        fontSize: '0.95rem'
-      })}>{props.status}</span>
+          color: '#e74c3c',
+          fontSize: '0.95rem'
+        })}>{task.task_status}</span>
       </div>: null}
-      {props.status==='in_progress'?<div className={css({
+      {task.task_status==='in_progress'?<div className={css({
         display:'flex',
         alignItems: 'center',
         marginTop: '0.75rem'
@@ -68,9 +99,9 @@ function TaskHolder(props) {
         <span className={css({
           color: '#f1c40f',
           fontSize: '0.95rem'
-        })}>{props.status}</span>
+        })}>{task.task_status}</span>
       </div>:null}
-      {props.status ==='complete'?<div className={css({
+      {task.task_status ==='complete'?<div className={css({
         display:'flex',
         alignItems: 'center',
         marginTop: '0.75rem'
@@ -87,7 +118,7 @@ function TaskHolder(props) {
         <span className={css({
           color: '#2ecc71',
           fontSize: '0.95rem'
-        })}>{props.status}</span>
+        })}>{task.task_status}</span>
       </div>:null}
       <div className={css({
         marginTop: '1rem',
@@ -109,7 +140,7 @@ function TaskHolder(props) {
         })}>
           <span className={css({
             fontWeight: '600'
-          })}>First Name: <span className={css({color: '#616a6b'})}>{props.first_name}</span></span>
+          })}>First Name: <span className={css({color: '#616a6b'})}>{customer.first_name}</span></span>
         </div>
 
         <div className={css({
@@ -117,7 +148,7 @@ function TaskHolder(props) {
         })}>
           <span className={css({
             fontWeight: '600'
-          })}>Other Name: <span className={css({color: '#616a6b'})}>{props.other_name}</span></span>
+          })}>Other Name: <span className={css({color: '#616a6b'})}>{customer.last_name}</span></span>
         </div>
 
         <div className={css({
@@ -125,7 +156,7 @@ function TaskHolder(props) {
         })}>
           <span className={css({
             fontWeight: '600'
-          })}>Last Name: <span className={css({color: '#616a6b'})}>{props.last_name}</span></span>
+          })}>Last Name: <span className={css({color: '#616a6b'})}>{customer.last_name}</span></span>
         </div>
       </div>
       <div className={css({
@@ -133,7 +164,7 @@ function TaskHolder(props) {
       })}>
           <span className={css({
             fontWeight: '600'
-          })}>Phone Number: <span className={css({color: '#616a6b'})}>{props.phone}</span></span>
+          })}>Phone Number: <span className={css({color: '#616a6b'})}>{customer.phone_number}</span></span>
       </div>
 
       <div className={css({
@@ -149,7 +180,7 @@ function TaskHolder(props) {
       })}>
           <span className={css({
             fontWeight: '600'
-          })}>Gender: <span className={css({color: '#616a6b'})}>{props.gender}</span></span>
+          })}>Gender: <span className={css({color: '#616a6b'})}>{customer.gender}</span></span>
       </div>
 
       <div className={css({
@@ -157,11 +188,29 @@ function TaskHolder(props) {
       })}>
           <span className={css({
             fontWeight: '600'
-          })}>Comments: <span className={css({color: '#616a6b'})}>{props.comments}</span></span>
+          })}>Comments: <span className={css({color: '#616a6b'})}>{count}</span></span>
       </div>
+      <ul className={css({
+
+      })}>
+        {comment.map(i => (<li>{i.content}</li>))}
+      </ul>
+
+      <div className={css({
+        marginTop: '1rem',
+        color: '#616a6b',
+        fontSize: '0.95rem',
+        fontWeight: '600'
+      })}>Agent Details</div>
+      {task.assigned?agent.map(i =>(
+        <>
+          <div>First Name: {i.personel_first_name}</div>
+          <div>Middle Name: {i.personel_last_name}</div>
+          <div>Last Name: {i.personel_last_name}</div>
+        </>
+      )):<p>Pending agent assignment</p>}
     </div>
   )
-
 }
 
-export default TaskHolder
+export default TaskSingleContainer

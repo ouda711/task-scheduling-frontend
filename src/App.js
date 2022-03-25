@@ -7,23 +7,32 @@ import Login from './components/users/Login';
 import Register from './components/users/Register';
 import ForgetPassword from './components/users/ForgetPassword';
 import HomePage from './components/pages/HomePage';
+import TaskSinglePage from './components/pages/TaskSinglePage';
+import Notification from './components/partials/Notification';
+import PrivateRoute from './services/guard/PrivateRoute';
+
 
 const engine = new Styletron();
 function App() {
+
   return (
-    <StyletronProvider value={engine}>
-      <BaseProvider theme={LightTheme} children={null}>
-        <BrowserRouter>
-          <Switch>
-            <Redirect exact from='/' to='/home' />
-            <Route exact path={"/login"} component={Login} />
-            <Route exact path={"/register"} component={Register} />
-            <Route exact path={"/forget-password"} component={ForgetPassword} />
-            <Route exact path={"/home"} component={HomePage} />
-          </Switch>
-        </BrowserRouter>
-      </BaseProvider>
-    </StyletronProvider>
+    <>
+      <Notification />
+      <BrowserRouter forceRefresh={true}>
+        <StyletronProvider value={engine}>
+          <BaseProvider theme={LightTheme} children={null}>
+            <Switch>
+              <Redirect exact from='/' to='/home' />
+              <Route exact path={"/login"} component={Login} />
+              <Route exact path={"/register"} component={Register} />
+              <Route exact path={"/forget-password"} component={ForgetPassword} />
+              <PrivateRoute exact path={"/tasks"} component={HomePage} />
+              <PrivateRoute exact path={"/task/:id"} component={TaskSinglePage} />
+            </Switch>
+          </BaseProvider>
+        </StyletronProvider>
+      </BrowserRouter>
+    </>
   );
 }
 

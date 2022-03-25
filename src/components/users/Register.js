@@ -1,18 +1,49 @@
 import React,{useState, useEffect} from 'react';
 import {useStyletron} from 'baseui';
 import { useForm } from 'react-hook-form';
-import {Grid, Cell} from 'baseui/layout-grid';
-import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { AxiosUsersService } from '../../services/net/AxiosUsersService';
+import { ToastContainer, toast } from 'react-toastify';
+import { history } from '../../history';
 
 function Register() {
-  const [phone, setPhone] = useState('');
-  const [password, setPassword] = useState( '');
   const [css, theme] = useStyletron();
   const { handleSubmit, register, formState: {errors} } = useForm();
+  const [message, setMessage] = useState(null)
+  const [loading, setLoading] = useState(false)
+
+  const success = () => {
+    toast('Check your email to verify your account', {
+      position: "top-right",
+      autoClose: 10000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+  }
 
   const onSubmit = (values) => {
-    console.log(values)
+    setLoading(true)
+    AxiosUsersService.create(values).then(res => {
+      if(res.data.success === false){
+        setLoading(false)
+      }
+      if(res.data && res.data.success) {
+        setMessage(<div className={"alert alert-success"}>{res.data.full_messages}</div>)
+        setLoading(false)
+        success()
+      }else{
+        setMessage(<div className={"alert alert-error"}>{res.data.full_messages}</div>)
+        setLoading(false)
+      }
+      console.log(res)
+      setLoading(false)
+    }).catch(err=>{
+      setLoading(false)
+      setMessage(<div className={'alert alert-danger'}>Its possible the phone and/or email are taken</div>)
+    })
   }
 
   useEffect(() => {
@@ -24,7 +55,7 @@ function Register() {
       <Inner>
         <div className={css({
           fontFamily: 'sans-serif',
-          width: '300px',
+          width: '400px',
           marginLeft: 'auto',
           marginRight: 'auto',
           marginTop: '3em',
@@ -35,6 +66,7 @@ function Register() {
           boxShadow: '2px 5px 20px rgba(0, 0, 0, 0.1)',
         })}>
           <form onSubmit={handleSubmit(onSubmit)}>
+            {message}
             <h2 className={css({
               textAlign: 'center',
               fontWeight: 'bold',
@@ -55,7 +87,7 @@ function Register() {
               <label htmlFor="fname" className={css({
                 color: 'rgb(170 166 166)'
               })}> <b>First Name</b></label>
-              <input type="text" placeholder="Enter first name" id={"fname"} name="fname" {...register("fname", {required: "First name is required"})} className={css({
+              <input type="text" placeholder="Enter first name" id={"fname"} name="first_name" {...register("first_name", {required: "First name is required"})} className={css({
                 padding: '10px 20px',
                 marginTop: '8px',
                 marginBottom: '15px',
@@ -70,7 +102,7 @@ function Register() {
               <label htmlFor="lname" className={css({
                 color: 'rgb(170 166 166)'
               })}> <b>Last Name</b></label>
-              <input type="text" placeholder="Enter last name" name="lname" id={"lname"} {...register("lname", {required: "Last name is required"})} className={css({
+              <input type="text" placeholder="Enter last name" name="last_name" id={"lname"} {...register("last_name", {required: "Last name is required"})} className={css({
                 padding: '10px 20px',
                 marginTop: '8px',
                 marginBottom: '15px',
@@ -85,7 +117,7 @@ function Register() {
               <label htmlFor="email" className={css({
                 color: 'rgb(170 166 166)'
               })}> <b>Email</b></label>
-              <input type="email" placeholder="Enter Email" name="email" id={"email"} {...register('email', {required: "Email address is required", pattern: {value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, message: "Please provide a valid email address"}})} className={css({
+              <input type="email" placeholder="Enter Email" name="email" id={"email_address"} {...register('email_address', {required: "Email address is required", pattern: {value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i, message: "Please provide a valid email address"}})} className={css({
                 padding: '10px 20px',
                 marginTop: '8px',
                 marginBottom: '15px',
@@ -100,7 +132,7 @@ function Register() {
               <label htmlFor="phone" className={css({
                 color: 'rgb(170 166 166)'
               })}> <b>Phone</b></label>
-              <input type="text" placeholder="Enter Phone" name="phone" id={"phone"} {...register('phone', {required:'Phone number is required', minLength: {value: 8, message:'Please provide a valid phone number'}, maxLength:{value: 12, message: 'Please provide a valid phone number'}})} className={css({
+              <input type="text" placeholder="Enter Phone" name="phone_number" id={"phone"} {...register('phone_number', {required:'Phone number is required', minLength: {value: 8, message:'Please provide a valid phone number'}, maxLength:{value: 12, message: 'Please provide a valid phone number'}})} className={css({
                 padding: '10px 20px',
                 marginTop: '8px',
                 marginBottom: '15px',
@@ -128,7 +160,17 @@ function Register() {
               color: ' #ec7063 ',
               fontSize: '0.75rem'
             })}>{errors.password && errors.password.message}</span>
-            <button className={css({
+            {loading? <button className={css({
+              backgroundColor: 'rgba(69, 69, 185, 0.2)',
+              color: 'white',
+              padding: '10px 20px',
+              marginTop: '10px',
+              marginBottom: '20px',
+              width: '100%',
+              borderRadius: '10px',
+              border: 'none',
+              cursor: 'disabled'
+            })}>Please wait...</button>:<button className={css({
               backgroundColor: 'rgb(69, 69, 185)',
               color: 'white',
               padding: '10px 20px',
@@ -138,7 +180,7 @@ function Register() {
               borderRadius: '10px',
               border: 'none',
               cursor: 'pointer'
-            })}>Sign Up</button>
+            })}>Sign Up</button>}
           </form>
         </div>
       </Inner>

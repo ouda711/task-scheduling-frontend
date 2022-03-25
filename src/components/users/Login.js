@@ -4,10 +4,12 @@ import {Grid, Cell} from 'baseui/layout-grid';
 import { connect } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux'
+import { AuthActionCreators } from '../../actions/auth.actions';
 
-function Login() {
-  const [phone, setPhone] = useState('');
-  const [password, setPassword] = useState( '');
+
+function Login(props) {
   const [css, theme] = useStyletron();
   const {register, handleSubmit, formState: {errors}} = useForm({
     defaultValues: {
@@ -16,16 +18,21 @@ function Login() {
     }
   });
 
-  useEffect(() => {
 
+  useEffect(() => {
+    // dispatch(AuthActionCreators.login(onSubmit))
   }, []);
+
+  const onSubmit = (data) => {
+    props.submitForm(data)
+  }
 
   return (
     <Outer>
       <Inner>
         <div className={css({
           fontFamily: 'sans-serif',
-          width: '300px',
+          width: '400px',
           marginLeft: 'auto',
           marginRight: 'auto',
           marginTop: '3em',
@@ -35,9 +42,7 @@ function Login() {
           padding: '1.8rem',
           boxShadow: '2px 5px 20px rgba(0, 0, 0, 0.1)',
         })}>
-          <form onSubmit={handleSubmit((data) => {
-            console.log(data);
-          })}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <h2 className={css({
               textAlign: 'center',
               fontWeight: 'bold',
@@ -87,7 +92,17 @@ function Login() {
               fontSize: '0.75rem',
               marginTop: '-0.75rem'
             })}>{errors.password && errors.password.message}</span>
-            <button className={css({
+            {props.loading? <button disabled className={css({
+              backgroundColor: 'rgba(69, 69, 185, 0.2)',
+              color: 'white',
+              padding: '10px 20px',
+              marginTop: '10px',
+              marginBottom: '20px',
+              width: '100%',
+              borderRadius: '10px',
+              border: 'none',
+              cursor: 'disabled'
+            })}>Please wait...</button> :<button className={css({
               backgroundColor: 'rgb(69, 69, 185)',
               color: 'white',
               padding: '10px 20px',
@@ -97,7 +112,7 @@ function Login() {
               borderRadius: '10px',
               border: 'none',
               cursor: 'pointer'
-            })}>Log In</button>
+            })}>Log In</button>}
             <Link className={css({
               textAlign: 'center',
               display: 'block',
@@ -141,4 +156,17 @@ const Inner = ({children}) => {
   );
 };
 
-export default Login;
+function mapDispatchToProps(dispatch, props) {
+  return {
+    submitForm: (loginForm) => dispatch(AuthActionCreators.login(loginForm)),
+  };
+}
+
+function mapStateToProps(state) {
+  return {
+    loading: state.AuthReducer.isLoggingIn,
+    isLoggedIn: state.AuthReducer.isLoggedIn
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

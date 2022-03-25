@@ -1,10 +1,12 @@
 import React from 'react';
-import Header from '../header/Header';
 import {useStyletron} from 'baseui';
+import Header from '../header/Header';
 import TaskContainer from '../tasks/TaskContainer';
+import TaskSingleContainer from '../tasks/TaskSingleContainer';
 
-function HomePage() {
+function TaskSinglePage() {
   const [css, theme] = useStyletron();
+
   return (
     <div className={css({
       position:'relative',
@@ -14,6 +16,7 @@ function HomePage() {
       <div className={css({
         position: 'fixed',
         width: '100%',
+        marginTop: '-1rem',
         zIndex: '1000',
         top: '0',
       })}>
@@ -24,11 +27,11 @@ function HomePage() {
         width: '50%',
         margin:' 6rem auto auto auto'
       })}>
-        <TaskContainer />
+        <TaskSingleContainer />
       </main>
 
     </div>
   )
 }
 
-export default HomePage
+export default TaskSinglePage

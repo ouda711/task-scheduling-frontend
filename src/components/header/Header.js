@@ -9,6 +9,8 @@ import {ReactComponent as User} from '../../assets/user.svg';
 import {ReactComponent as Exit} from '../../assets/exit.svg';
 import {ReactComponent as Task} from '../../assets/task.svg';
 import image from '../../assets/face.jpg'
+import { UsersService } from '../../services/local/UsersService';
+import { history } from '../../history';
 
 
 function Header() {
@@ -138,6 +140,7 @@ function DropdownMenu() {
   }
 
   function DropdownItem(props) {
+
     return (
       <a href={props.link} className={css({
         height: '40px',
@@ -161,6 +164,12 @@ function DropdownMenu() {
         })}>{props.rightIcon}</span>
       </a>
     );
+  }
+
+  const logout = () => {
+    UsersService.clearSession();
+    history.push('/login')
+    window.location.reload();
   }
 
   return (
@@ -188,7 +197,7 @@ function DropdownMenu() {
         })}>
           <DropdownItem link={'/profile'} leftIcon={<User/>}>My Profile</DropdownItem>
           <DropdownItem link={'/tasks'} leftIcon={<Task/>}>Tasks</DropdownItem>
-          <DropdownItem link={'/logout'} leftIcon={<Exit/>}>Sign Out</DropdownItem>
+          <button onClick={logout}>Sign Out</button>
         </div>
       </CSSTransition>
     </div>

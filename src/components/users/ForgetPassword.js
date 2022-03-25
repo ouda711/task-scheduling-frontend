@@ -23,7 +23,7 @@ function ForgetPassword() {
       <Inner>
         <div className={css({
           fontFamily: 'sans-serif',
-          width: '300px',
+          width: '400px',
           marginLeft: 'auto',
           marginRight: 'auto',
           marginTop: '3em',

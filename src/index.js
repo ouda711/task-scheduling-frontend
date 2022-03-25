@@ -8,6 +8,7 @@ import { UsersService } from './services/local/UsersService';
 import { AxiosService } from './services/net/base/AxiosService';
 import { AuthAction } from './actions/types';
 import { Provider } from 'react-redux';
+import 'react-toastify/dist/ReactToastify.css';
 
 const store = getStore();
 

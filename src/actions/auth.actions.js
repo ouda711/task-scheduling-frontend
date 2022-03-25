@@ -2,6 +2,7 @@ import {UiActionCreator} from './ui.actions';
 import {AuthAction} from './types';
 import {AxiosUsersService} from '../services/net/AxiosUsersService';
 import {UsersService} from '../services/local/UsersService';
+import { history } from '../history';
 
 function login(loginForm) {
   return dispatch => {
@@ -15,6 +16,8 @@ function login(loginForm) {
         UsersService.saveUser(user);
         dispatch(success(result.user));
         dispatch(UiActionCreator.successToast("Logged in successfully"));
+        history.push('/tasks')
+        window.location.reload();
       }else{
         if(result.errors)
           dispatch(failure('Internal server error.'))
