@@ -22,7 +22,7 @@ function App() {
         <StyletronProvider value={engine}>
           <BaseProvider theme={LightTheme} children={null}>
             <Switch>
-              <Redirect exact from='/' to='/home' />
+              <Redirect exact from='/' to='/tasks' />
               <Route exact path={"/login"} component={Login} />
               <Route exact path={"/register"} component={Register} />
               <Route exact path={"/forget-password"} component={ForgetPassword} />
