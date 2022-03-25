@@ -4,7 +4,7 @@ require('dotenv').config();
 
 export const AxiosUsersService = {
   login(user) {
-    return AxiosService.post('http://127.0.0.1:4000/api/v1/users/login', user);
+    return AxiosService.post(`${process.env.REACT_APP_SERVER_URL}/users/login`, user);
   },
 
   logout() {
